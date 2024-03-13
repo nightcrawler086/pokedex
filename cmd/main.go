@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-  fmt.Println("Hello, World!")
+	router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
+	router.GET("/index", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "Main website",
+		})
+	})
+	router.Run(":42069")
 }

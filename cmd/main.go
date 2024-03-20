@@ -6,19 +6,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func newPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"title": "Main website",
+	c.HTML(http.StatusOK, "index.html", gin.H{
+		"heading": "Main website",
 	})
 }
 
 func main() {
 
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017/data/pokemon")
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
 		fmt.Println("Failed to connect to MongoDB:", err)
@@ -32,8 +33,20 @@ func main() {
 		return
 	}
 	fmt.Println("Connected to MongoDB!")
+	pokemon := client.Database("data").Collection("pokemon")
 	router := gin.Default()
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("views/*")
 	router.GET("/index", newPage)
+	router.GET("/data", func(c *gin.Context) {
+		var results []bson.M
+		cursor, err := pokemon.Find(context.TODO(), bson.D{})
+		if err != nil {
+			panic(err)
+		}
+		if err = cursor.All(context.TODO(), &results); err != nil {
+			panic(err)
+		}
+		c.JSON(http.StatusOK, results)
+	})
 	router.Run(":42069")
 }

@@ -5,21 +5,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
+        <link rel="stylesheet" href="/index.css">
     </head>
     <body>
-        {{ template "table" .Data }}
+        <h1>{{ .heading }}</h1>
     </body>
 </html>
-{{ end }}
-
-{{ block "title" . }}
-    <h1>{{ .heading }}</h1>
-{{ end }}
-
-{{ block "table" . }}
-    <ul hx-get="/data" hx-trigger="load">
-        {{ range .pokemon }}
-            <li>{{ .name }}</li>
-        {{ end }}
-    </ul>
 {{ end }}

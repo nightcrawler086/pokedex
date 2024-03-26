@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -13,7 +14,7 @@ import (
 
 func newPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{
-		"heading": "Main website",
+		"heading": "Pokedex",
 	})
 }
 
@@ -35,10 +36,15 @@ func main() {
 	fmt.Println("Connected to MongoDB!")
 	pokemon := client.Database("data").Collection("pokemon")
 	router := gin.Default()
-	router.LoadHTMLGlob("views/*")
+	router.LoadHTMLGlob("../views/*")
+	router.GET("/", func(c *gin.Context) {
+		c.Request.URL.Path = "/index"
+		router.HandleContext(c)
+	})
 	router.GET("/index", newPage)
 	router.GET("/data", func(c *gin.Context) {
 		var results []bson.M
+		jsonData, err := json.Marshal(results)
 		cursor, err := pokemon.Find(context.TODO(), bson.D{})
 		if err != nil {
 			panic(err)
@@ -46,7 +52,7 @@ func main() {
 		if err = cursor.All(context.TODO(), &results); err != nil {
 			panic(err)
 		}
-		c.JSON(http.StatusOK, results)
+		c.JSON(http.StatusOK, jsonData)
 	})
 	router.Run(":42069")
 }

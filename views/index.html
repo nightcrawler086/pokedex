@@ -1,14 +1,17 @@
 {{ block "page" . }}
 <!DOCTYPE html>
-<html lang ="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
-        <link rel="stylesheet" href="/index.css">
-    </head>
-    <body>
-        <h1>{{ .heading }}</h1>
-    </body>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+    <h1>{{ .Heading }}</h1>
+</body>
+
 </html>
 {{ end }}

@@ -13,7 +13,7 @@ func init() {
 	}
 }
 
-func ShowIndex(w http.ResponseWriter, r *http.Request) {
+func GetIndex(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
 		"title":   "Golang Web Server",
 		"Heading": "Hello World",

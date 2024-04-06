@@ -13,10 +13,17 @@ func init() {
 	}
 }
 
+var i int
+
 func GetIndex(w http.ResponseWriter, r *http.Request) {
+	i++
+	heading := "Hello"
+	if i%2 == 0 {
+		heading = "Bonjour"
+	}
 	data := map[string]string{
 		"title":   "Golang Web Server",
-		"Heading": "Hello World",
+		"Heading": heading,
 	}
 	tmpl.ExecuteTemplate(w, "index.html", data)
 }

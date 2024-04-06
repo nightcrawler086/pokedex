@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,6 +13,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", GetIndex).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":8081", r))
+	log.Fatal(http.ListenAndServe(":8080", r))
+	fmt.Println("Server is running on port 8080")
 
 }

@@ -11,6 +11,18 @@
 
 <body>
     <h1>{{ .Heading }}</h1>
+    <table>
+        <tr>
+            <thead>Name</thead>
+            <thead>URL</thead>
+        </tr>
+        {{ range .queryResponse.Results }}
+        <tr>
+            <td>{{ .Name }}</td>
+            <td>{{ .URL }}</td>
+        </tr>
+        {{ end }}
+    </table>
 </body>
 
 </html>

@@ -13,4 +13,6 @@ FROM alpine:3.20
 
 COPY --from=builder /app /app
 COPY views /views
+COPY configs /configs
+EXPOSE 8080
 CMD ["/app"]

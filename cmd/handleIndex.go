@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"example/pokedex/internal/config"
 	"html/template"
@@ -9,7 +10,7 @@ import (
 	"net/http"
 )
 
-func handleIndex(config *config.Config, logger *slog.Logger, tmpl *template.Template) http.Handler {
+func handleIndex(config *config.Config, logger *slog.Logger, tmpl *template.Template, db *sql.DB) http.Handler {
 
 	const pokemonUri = "http://pokeapi.co/api/v2/pokemon"
 	type Pokemon struct {
@@ -25,6 +26,9 @@ func handleIndex(config *config.Config, logger *slog.Logger, tmpl *template.Temp
 		func(w http.ResponseWriter, r *http.Request) {
 			logger.Info("Made it to Index Handler")
 			logger.Info(config.Host)
+			if err := db.Ping(); err != nil {
+				logger.Error(err.Error())
+			}
 			response, err := http.Get(pokemonUri + "?limit=50")
 			if err != nil {
 				panic(err)

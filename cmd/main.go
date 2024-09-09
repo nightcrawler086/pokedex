@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"example/pokedex/internal/config"
 	"fmt"
 	"html/template"
@@ -13,11 +14,13 @@ import (
 	"os/signal"
 	"sync"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
-func NewServer(config *config.Config, logger *slog.Logger, tmpl *template.Template) http.Handler {
+func NewServer(config *config.Config, logger *slog.Logger, tmpl *template.Template, db *sql.DB) http.Handler {
 	mux := http.NewServeMux()
-	addRoutes(mux, config, logger, tmpl)
+	addRoutes(mux, config, logger, tmpl, db)
 	var handler http.Handler = mux
 	return handler
 }
@@ -25,10 +28,19 @@ func NewServer(config *config.Config, logger *slog.Logger, tmpl *template.Templa
 func run(ctx context.Context) error {
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
+	// Logger
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	// Config
 	config := config.NewConfig()
+	// Templater
 	tmpl := template.Must(template.ParseGlob("./views/*.html"))
-	srv := NewServer(config, logger, tmpl)
+	// DB
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", "postgres", "5432", "postgres", "postgres", "pokedex")
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	srv := NewServer(config, logger, tmpl, db)
 	httpServer := &http.Server{
 		Addr:    net.JoinHostPort(config.Host, config.Port),
 		Handler: srv,

@@ -39,7 +39,7 @@ func run(ctx context.Context) error {
 			fmt.Fprintf(os.Stderr, "error listening and serving: %s\n", err)
 		}
 	}()
-	var wg sync.WaitGroup
+	var wg sync.WaitGroup // need to understand this better
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

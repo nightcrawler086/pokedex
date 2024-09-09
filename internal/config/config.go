@@ -12,6 +12,8 @@ type Config struct {
 }
 
 func NewConfig() *Config {
+	viper.SetDefault("host", "localhost")
+	viper.SetDefault("port", "8080")
 	viper.SetConfigName("configs/local")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")

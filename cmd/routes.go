@@ -8,5 +8,5 @@ import (
 )
 
 func addRoutes(mux *http.ServeMux, config *config.Config, logger *slog.Logger, tmpl *template.Template) {
-	mux.Handle("/", handleIndex(logger, tmpl))
+	mux.Handle("/", handleIndex(config, logger, tmpl))
 }

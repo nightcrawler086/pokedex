@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"example/pokedex/internal/config"
 	"html/template"
 	"io"
 	"log/slog"
 	"net/http"
 )
 
-func handleIndex(logger *slog.Logger, tmpl *template.Template) http.Handler {
+func handleIndex(config *config.Config, logger *slog.Logger, tmpl *template.Template) http.Handler {
 
 	const pokemonUri = "http://pokeapi.co/api/v2/pokemon"
 	type Pokemon struct {
@@ -23,7 +24,8 @@ func handleIndex(logger *slog.Logger, tmpl *template.Template) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			logger.Info("Made it to Index Handler")
-			response, err := http.Get(pokemonUri + "?limit=20")
+			logger.Info(config.Host)
+			response, err := http.Get(pokemonUri + "?limit=50")
 			if err != nil {
 				panic(err)
 			}
@@ -39,7 +41,7 @@ func handleIndex(logger *slog.Logger, tmpl *template.Template) http.Handler {
 			}
 			data := map[string]any{
 				"title":         "Pokedex",
-				"Heading":       "Pokemon",
+				"Heading":       "Pokedex",
 				"queryResponse": responseObj,
 			}
 			tmpl.ExecuteTemplate(w, "index.html", data)

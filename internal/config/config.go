@@ -7,13 +7,18 @@ import (
 )
 
 type Config struct {
-	Host string
-	Port string
+	Host   string
+	Port   string
+	DBHost string
+	DBPort string
+	DBUser string
+	DBPass string
+	DBName string
 }
 
 func NewConfig() *Config {
-	viper.SetDefault("host", "localhost")
-	viper.SetDefault("port", "8080")
+	viper.SetDefault("host", "")
+	viper.SetDefault("port", ":8080")
 	viper.SetConfigName("configs/local")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")

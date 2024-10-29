@@ -9,16 +9,16 @@ services:
     restart: always
     image: pokedex
     depends_on:
-      postgres: 
+      postgres:
         condition: service_healthy
-    networks:
-      - backend
 
   postgres:
     container_name: postgres
     image: postgres
     ports:
       - "5432:5432"
+    expose:
+      - "5432"
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -29,9 +29,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - backend
-
-networks:
-  backend:
-    driver: bridge

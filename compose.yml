@@ -5,12 +5,24 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8181"
     restart: always
     image: pokedex
     depends_on:
       postgres:
         condition: service_healthy
+
+  solace:
+    container_name: solace
+    image: solace/solace-pubsub-standard:latest
+    shm_size: 1g
+    ports:
+      - "8080:8080"
+      - "55555:55555"
+    restart: always
+    environment:
+      - username_admin_globalaccesslevel=admin
+      - username_admin_password=admin
 
   postgres:
     container_name: postgres

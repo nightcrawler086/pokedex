@@ -9,20 +9,25 @@ services:
     restart: always
     image: pokedex
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+      - nats
 
-  solace:
-    container_name: solace
-    image: solace/solace-pubsub-standard:latest
-    shm_size: 1g
+  nats:
+    image: nats
     ports:
-      - "8080:8080"
-      - "55555:55555"
-    restart: always
-    environment:
-      - username_admin_globalaccesslevel=admin
-      - username_admin_password=admin
+      - "8222:8222"
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222 "
+    networks: ["nats"]
+  nats-1:
+    image: nats
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --routes=nats://ruser:T0pS3cr3t@nats:6222"
+    networks: ["nats"]
+    depends_on: ["nats"]
+  nats-2:
+    image: nats
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --routes=nats://ruser:T0pS3cr3t@nats:6222"
+    networks: ["nats"]
+    depends_on: ["nats"]
 
   postgres:
     container_name: postgres
@@ -41,3 +46,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+networks:
+  nats:
+    name: nats
+

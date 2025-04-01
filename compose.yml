@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8181"
+      - "42069:42069"
     restart: always
     image: pokedex
     depends_on:
